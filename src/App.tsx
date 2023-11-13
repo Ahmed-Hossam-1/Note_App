@@ -8,6 +8,9 @@ import {
 } from "react-router-dom";
 import Layout from "./components/Layout";
 import NewNote from "./components/NewNote";
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { RawNote, Tag } from "./types/type";
+import { useMemo } from "react";
 
 const App = () => {
   const router = createBrowserRouter(
@@ -25,6 +28,13 @@ const App = () => {
       </>
     )
   );
+  const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTS", []);
+  const [tags, setTages] = useLocalStorage<Tag[]>("TAGS", []);
+  const noteWithTags = useMemo(() => {
+    return notes.map((note) => {
+      return { ...note, tages: tags.filter((tag) => tag.id.includes(tag.id)) };
+    });
+  }, [notes, tags]);
   return <RouterProvider router={router} />;
 };
 
